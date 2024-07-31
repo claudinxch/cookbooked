@@ -8,11 +8,12 @@ import { CreatePostDialog } from './create-post'
 
 export default async function Navbar() {
   const session = await auth()
+  const user = session?.user
 
   return (
     <header className="max-w-[1200px] bg-background flex py-4 px-4 xl:px-0 mx-auto fixed right-0 left-0 justify-between items-center">
       <Link href={'/'}>
-        {!session?.user ? (
+        {!user ? (
           <Image
             src="cookbooked.svg"
             alt="Cook Booked logo"
@@ -34,7 +35,7 @@ export default async function Navbar() {
           </>
         )}
       </Link>
-      {!session?.user ? (
+      {!user ? (
         <div className="px-4 flex gap-4 items-center">
           <Link href="/login">
             <Button variant="ghost" className="text-base font-normal">
