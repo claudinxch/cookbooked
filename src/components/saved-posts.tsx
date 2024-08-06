@@ -22,7 +22,7 @@ export async function SavedPosts({ posts }: SavedPostsProps) {
         <CardTitle>Saved Posts</CardTitle>
       </CardHeader>
       <CardContent className={`flex flex-col gap-y-4`}>
-        {posts.slice(0, 10).map((post) => (
+        {posts.slice(0, 3).map((post) => (
           <SavedPost key={post.id} postSaved={post} />
         ))}
       </CardContent>
