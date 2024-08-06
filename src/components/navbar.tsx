@@ -54,9 +54,6 @@ export default async function Navbar() {
             <Button className="text-base font-normal">My dashboard</Button>
           </Link>
           <ModeToggle />
-          {/* <Avatar>
-            <AvatarImage src={image} />
-          </Avatar> */}
           <UserAvatar />
         </div>
       )}

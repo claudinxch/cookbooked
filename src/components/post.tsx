@@ -7,39 +7,58 @@ import {
   CardTitle,
 } from './ui/card'
 import Image from 'next/image'
+import db from '@/lib/prisma'
+import { SaveButton } from './save-button'
+export interface Post {
+  id: number
+  authorId: string
+  title: string
+  content: string
+  image: string
+  savedCount: number
+  createdAt: Date
+}
 
-export function Post() {
+interface PostProps {
+  post: Post
+}
+
+export async function Post({ post }: PostProps) {
+  const author = await db.user.findUnique({
+    where: {
+      id: post.authorId,
+    },
+  })
+
+  let image: string | undefined
+  if (author?.image) {
+    image = author.image || undefined
+  }
+
   return (
     <Card className="max-w-[700px]">
       <CardHeader className="flex flex-row gap-3">
         <Avatar className="size-12">
           <AvatarImage
-            src="/cookbooked.png"
+            src={image}
             className="rounded-full object-cover overflow-hidden"
           />
         </Avatar>
         <div className="flex justify-between w-[90%]">
           <div>
-            <CardTitle>Claudio Henrique</CardTitle>
+            <CardTitle>{author?.name}</CardTitle>
             <CardDescription className="mt-1">
               Chief of culinary
             </CardDescription>
           </div>
-          <span className="text-end">09/09/2024</span>
+          <span className="text-end">
+            {post.createdAt.toLocaleDateString()}
+          </span>
         </div>
       </CardHeader>
       <CardContent>
-        <h1 className="text-2xl font-semibold mb-2">Feijoada da braba!</h1>
-        <p className="text-base">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi
-          pariatur optio alias reprehenderit sapiente a exercitationem numquam,
-          praesentium accusamus est unde id dolorum deleniti modi accusantium
-          architecto asperiores, amet repudiandae! Lorem ipsum dolor sit amet
-          consectetur adipisicing elit. Commodi pariatur optio alias
-          reprehenderit sapiente a exercitationem numquam, praesentium accusamus
-          est unde id dolorum deleniti modi accusantium architecto asperiores,
-          amet repudiandae!
-        </p>
+        <h1 className="text-2xl font-semibold mb-2">{post.title}</h1>
+        <p className="text-base">{post.content}</p>
         <div className="flex flex-wrap">
           <div className="mt-4 mx-auto flex items-center justify-center border w-[300px] overflow-hidden rounded-xl">
             <Image
@@ -60,6 +79,8 @@ export function Post() {
             />
           </div>
         </div>
+
+        <SaveButton post={post} initialSavedCount={post.savedCount} />
       </CardContent>
     </Card>
   )

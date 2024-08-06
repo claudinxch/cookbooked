@@ -6,54 +6,24 @@ import { CreatePostCard } from '@/components/create-post'
 import { MyPosts } from '@/components/my-posts'
 import { SavedPosts } from '@/components/saved-posts'
 import { Button } from '@/components/ui/button'
-import type { SavedPost } from '@/components/saved-posts'
 import type { MyPost } from '@/components/my-posts'
 import { UserAvatar } from '@/components/user-avatar'
 import { Settings, ChartColumn } from 'lucide-react'
+import db from '@/lib/prisma'
 
 export default async function Dashboard() {
-  const savedPosts: SavedPost[] = [
-    {
-      id: 1,
-      avatar: '/cookbooked.png',
-      author: 'Claudio Henrique',
-      role: 'Chief of culinary',
-      recipe: 'Feijoada',
-      postLink: '',
+  const session = await auth()
+  const user = session?.user
+
+  const savedPosts = await db.post.findMany({
+    where: {
+      savedBy: {
+        some: {
+          id: user?.id,
+        },
+      },
     },
-    {
-      id: 2,
-      avatar: '/cookbooked.png',
-      author: 'Lorrayni',
-      role: 'Chief of culinary',
-      recipe: 'Carbonara',
-      postLink: '',
-    },
-    {
-      id: 3,
-      avatar: '/cookbooked.png',
-      author: 'João Tenório',
-      role: 'Cooker',
-      recipe: 'Meat',
-      postLink: '',
-    },
-    {
-      id: 4,
-      avatar: '/cookbooked.png',
-      author: 'João Tenório',
-      role: 'Cooker',
-      recipe: 'Meat',
-      postLink: '',
-    },
-    {
-      id: 5,
-      avatar: '/cookbooked.png',
-      author: 'João Tenório',
-      role: 'Cooker',
-      recipe: 'Meat',
-      postLink: '',
-    },
-  ]
+  })
 
   const myPosts: MyPost[] = [
     {
@@ -77,8 +47,6 @@ export default async function Dashboard() {
       date: new Date('2024-09-01'),
     },
   ]
-
-  const session = await auth()
 
   return (
     <>
@@ -116,7 +84,7 @@ export default async function Dashboard() {
                 </Button>
               </Link>
               <form action={logOut}>
-                <Button type="submit">Sign Out</Button>
+                <Button type="submit">Log Out</Button>
               </form>
             </div>
           </div>
