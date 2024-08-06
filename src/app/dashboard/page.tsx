@@ -6,7 +6,6 @@ import { CreatePostCard } from '@/components/create-post'
 import { MyPosts } from '@/components/my-posts'
 import { SavedPosts } from '@/components/saved-posts'
 import { Button } from '@/components/ui/button'
-import type { MyPost } from '@/components/my-posts'
 import { UserAvatar } from '@/components/user-avatar'
 import { Settings, ChartColumn } from 'lucide-react'
 import db from '@/lib/prisma'
@@ -25,28 +24,11 @@ export default async function Dashboard() {
     },
   })
 
-  const myPosts: MyPost[] = [
-    {
-      id: 1,
-      title: 'Feijoada',
-      date: new Date(),
+  const myPosts = await db.post.findMany({
+    where: {
+      authorId: user?.id,
     },
-    {
-      id: 2,
-      title: 'Coxinha',
-      date: new Date('2024-08-01'),
-    },
-    {
-      id: 3,
-      title: 'Pão de queijo',
-      date: new Date('2024-08-15'),
-    },
-    {
-      id: 4,
-      title: 'Brigadeiro',
-      date: new Date('2024-09-01'),
-    },
-  ]
+  })
 
   return (
     <>

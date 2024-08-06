@@ -57,7 +57,7 @@ const SavedPost = async ({ postSaved }: SavedPostProps) => {
   return (
     <div
       key={postSaved.id}
-      className="flex justify-between cursor-pointer transition-colors duration-200 rounded py-1 hover:bg-muted"
+      className="flex justify-between gap-16 md:gap-0 cursor-pointer transition-colors duration-200 rounded py-1 hover:bg-muted"
     >
       <div className="flex gap-2">
         <Avatar>
