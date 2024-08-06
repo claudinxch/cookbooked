@@ -1,5 +1,5 @@
 import { Separator } from './ui/separator'
-import { Post } from './post'
+import { PostCard } from './post'
 import db from '@/lib/prisma'
 
 export async function Feed() {
@@ -14,7 +14,7 @@ export async function Feed() {
       <Separator className="max-w-[710px]" />
 
       {posts.map((post) => (
-        <Post key={post.id} post={post} />
+        <PostCard key={post.id} post={post} />
       ))}
     </div>
   )

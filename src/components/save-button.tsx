@@ -1,10 +1,8 @@
 'use client'
-import { savePost } from '@/lib/actions'
+import { isPostSaved, savePost } from '@/lib/actions'
 import type { Post } from './post'
-import { Heart } from 'lucide-react'
-import { useState } from 'react'
-import db from '@/lib/prisma'
-import { auth } from '@/auth'
+import { useEffect, useState } from 'react'
+import { Icons } from './icons'
 
 interface SaveButtonProps {
   post: Post
@@ -13,64 +11,39 @@ interface SaveButtonProps {
 
 export const SaveButton = ({ post, initialSavedCount }: SaveButtonProps) => {
   const [savedCount, setSavedCount] = useState(initialSavedCount)
+  const [isSaved, setIsSaved] = useState<boolean | undefined>()
 
-  const isSaved = async (postId: number) => {
-    const session = await auth()
-    const user = session?.user
+  useEffect(() => {
+    const checkIfSaved = async (postId: number) => {
+      const saved = await isPostSaved(postId)
 
-    const loggedUser = await db.user.findUnique({
-      where: {
-        id: user?.id,
-      },
-    })
-
-    if (loggedUser) {
-      const isPostSavedByUser = await db.user.findUnique({
-        where: {
-          id: loggedUser.id,
-        },
-        select: {
-          savedPosts: {
-            where: {
-              id: postId,
-            },
-            select: {
-              id: true,
-            },
-          },
-        },
-      })
-
-      const hasSavedPost = (isPostSavedByUser?.savedPosts?.length ?? 0) > 0
-
-      if (hasSavedPost) return true
-
-      return false
+      setIsSaved(saved)
     }
-  }
+
+    checkIfSaved(post.id)
+  }, [post.id])
 
   const handleSavePost = async (postId: number) => {
-    savePost(postId)
-    const isPostSaved = await isSaved(postId)
+    setIsSaved((prev) => !prev)
+    setSavedCount(isSaved ? savedCount - 1 : savedCount + 1)
 
-    if (isPostSaved) {
-      setSavedCount(savedCount - 1)
-    } else {
-      setSavedCount(savedCount + 1)
-    }
+    await savePost(postId)
+    await isPostSaved(postId)
   }
 
   return (
-    <div className="flex justify-end gap-1 mr-1 mt-2">
+    <div className="flex justify-end gap-px mr-1 mt-2">
       <button
-        onClick={() => {
+        className="cursor-default"
+        onClick={(e) => {
+          e.preventDefault()
           handleSavePost(post.id)
         }}
       >
-        <Heart />
+        <Icons.bookmark color={isSaved ? '#FFD700' : 'none'} />
       </button>
 
-      <span className="text-base">
+      <span className="text-lg self-center text-muted-foreground">
         {/* {post.savedCount > 0 && post.savedCount} */}
         {savedCount}
       </span>

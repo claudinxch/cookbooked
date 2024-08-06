@@ -47,7 +47,7 @@ const MyPost = async ({ myPost }: MyPostProps) => {
       className="flex justify-between gap-16 md:gap-0 cursor-pointer transition-colors duration-200  rounded py-2 hover:bg-muted"
     >
       <Link
-        href=""
+        href={`/post/${myPost.id}`}
         className="flex items-center ml-1 font-semibold leading-none tracking-tight gap-1 cursor-default transition-colors duration-200 hover:text-muted-foreground"
       >
         {myPost.title}

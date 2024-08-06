@@ -156,3 +156,39 @@ export const deleteFromSavedPost = async (postId: number) => {
     })
   }
 }
+
+export const isPostSaved = async (postId: number) => {
+  const session = await auth()
+  const user = session?.user
+
+  const loggedUser = await db.user.findUnique({
+    where: {
+      id: user?.id,
+    },
+  })
+
+  if (loggedUser) {
+    const isPostSavedByUser = await db.user.findUnique({
+      where: {
+        id: loggedUser.id,
+      },
+      select: {
+        savedPosts: {
+          where: {
+            id: postId,
+          },
+          select: {
+            id: true,
+          },
+        },
+      },
+    })
+
+    const hasSavedPost = (isPostSavedByUser?.savedPosts?.length ?? 0) > 0
+
+    if (hasSavedPost) {
+      return true
+    }
+    return false
+  }
+}

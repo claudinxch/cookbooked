@@ -74,7 +74,7 @@ const SavedPost = async ({ postSaved }: SavedPostProps) => {
 
       <div className="max-w-56 flex items-center mr-1">
         <Link
-          href={`/posts/${postSaved.id}`}
+          href={`/post/${postSaved.id}`}
           className="text-base flex gap-1 font-medium leading-none tracking-tight cursor-default transition-colors duration-200 hover:text-muted-foreground"
         >
           {postSaved.title} <ExternalLink size={16} />
